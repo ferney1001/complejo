@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cancelar Reserva</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="cancelar_reserva.js" defer></script>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">Alojamientos</div>
+        <div class="nav-links">
+            <a href="/">Inicio</a>
+            <a href="index.html">Buscar Alojamientos</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <h1>Cancelar Reserva</h1>
+    <div class="cancel-form">
+        <input type="text" id="cedula" placeholder="Ingrese su cédula" required>
+        <button id="buscar-btn">Buscar Reserva</button>
+    </div>
+
+    <div id="reserva-info" class="container" style="display:none;">
+        <h2>Información de la Reserva</h2>
+        <p id="reserva-details"></p>
+        <button id="eliminar-btn">Eliminar Reserva</button>
+        <button id="cancelar-btn">Cancelar</button>
+    </div>
+
+    <div id="mensaje" class="container"></div>
+</main>
+
+</body>
+</html>
