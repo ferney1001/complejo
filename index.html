@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alojamientos</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="script.js" defer></script>
+</head>
+<body>
+
+<header>
+    <nav>
+        <div class="logo">Alojamientos</div>
+        <div class="nav-links">
+            <a href="#">Inicio</a>
+            <a href="#">Contacto</a>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <h1>Buscar Alojamientos</h1>
+    <div class="search-form">
+        <input type="date" id="fecha-llegada" placeholder="Fecha de llegada" required>
+        <input type="date" id="fecha-salida" placeholder="Fecha de salida" required>
+        <select id="tipo-alojamiento" required>
+            <option value="">Selecciona tipo de alojamiento</option>
+            <option value="habitacion">Habitaciones</option>
+            <option value="cabana">Cabañas</option>
+        </select>
+        <button id="buscar-btn">Buscar</button>
+    </div>
+
+    <div id="alojamientos-container" class="container">
+        <!-- Aquí se generarán las tarjetas de alojamientos -->
+    </div>
+</main>
+
+</body>
+</html>

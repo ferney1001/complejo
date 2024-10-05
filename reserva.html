@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles del Alojamiento</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Importar Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-database.js";
+
+        // Configuración de tu app de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyCqticQBJ47NleC1abDIu1Eah8u5g6sAD8",
+            authDomain: "hotel-bcea0.firebaseapp.com",
+            projectId: "hotel-bcea0",
+            storageBucket: "hotel-bcea0.appspot.com",
+            messagingSenderId: "656395930658",
+            appId: "1:656395930658:web:69dea027697434a26bce7b"
+        };
+
+        // Inicializar Firebase y la base de datos
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const reservaForm = document.getElementById('reserva-form');
+
+            reservaForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const formData = new FormData(reservaForm);
+                const data = Object.fromEntries(formData.entries());
+
+                // Asegúrate de que 'idhabitacion' esté en 'data'
+                console.log("Datos a enviar:", data); // Ver los datos en la consola
+
+                try {
+                    const newReservaRef = ref(database, 'reservas/' + Date.now());
+                    await set(newReservaRef, data);
+                    console.log("Reserva confirmada con ID:", newReservaRef.key);
+                    alert("Reserva confirmada!");
+                    reservaForm.reset();
+                } catch (e) {
+                    console.error("Error al añadir reserva: ", e); // Ver el error en la consola
+                    alert("Error al confirmar la reserva. Intenta de nuevo.");
+                }
+            });
+
+            // Obtener el ID del alojamiento de la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const idAlojamiento = urlParams.get('id');
+            document.getElementById('idhabitacion').value = idAlojamiento; // Esto ahora está habilitado
+        });
+    </script>
+</head>
+
+<body>
+    <header>
+        <nav>
+            <div class="logo">Complejo Turístico</div>
+            <div class="nav-links">
+                <a href="/">Inicio</a>
+                <a href="/reservas_confirmadas">Reservas Confirmadas</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <h1>Detalles del Alojamiento</h1>
+            <form id="reserva-form">
+                <label>Nombre: <input type="text" name="nombre" required></label>
+                <label>Edad: <input type="number" name="edad" required></label>
+                <label>Cédula: <input type="text" name="cedula" required></label>
+                <label>Teléfono: <input type="tel" name="telefono" required></label>
+                <label>Correo electrónico: <input type="email" name="correo" required></label>
+                <label>ID Habitación: <input type="text" name="idhabitacion" id="idhabitacion" required></label>
+                <label>Fecha de llegada: <input type="date" name="fecha-llegada" required></label>
+                <label>Fecha de salida: <input type="date" name="fecha-salida" required></label>
+                
+                <h2>Selecciona los servicios adicionales:</h2>
+                <div class="servicios">
+                    <label>
+                        <input type="checkbox" name="servicio" value="bar"> 
+                        <img src="https://via.placeholder.com/50?text=Bar" alt="Bar"> Servicio de Bar
+                    </label>
+                    <label>
+                        <input type="checkbox" name="servicio" value="spa"> 
+                        <img src="https://via.placeholder.com/50?text=Spa" alt="Spa"> Servicio de Spa
+                    </label>
+                    <label>
+                        <input type="checkbox" name="servicio" value="salon_reuniones"> 
+                        <img src="https://via.placeholder.com/50?text=Salón" alt="Salón de Reuniones"> Salón de Reuniones
+                    </label>
+                    <label>
+                        <input type="checkbox" name="servicio" value="alquiler_bicicletas"> 
+                        <img src="https://via.placeholder.com/50?text=Bicicletas" alt="Alquiler de Bicicletas"> Alquiler de Bicicletas
+                    </label>
+                </div>
+
+                <button type="submit">Confirmar Reserva</button>
+            </form>
+        </div>
+    </main>
+</body>
+
+</html>
