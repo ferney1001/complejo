@@ -114,10 +114,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 `;
                 container.appendChild(card);
 
-                // Agregar el evento al botón de seleccionar
-                card.querySelector('.select-btn').addEventListener('click', () => {
-                    window.location.href = `reserva.html?id=${alojamiento.id}`;
-                });
+            // Agregar el evento al botón de seleccionar
+            card.querySelector('.select-btn').addEventListener('click', () => {
+                window.location.href = `reserva.html?id=${alojamiento.id}&precio=${alojamiento.precio}`;
+            });
+
             });
         });
     });

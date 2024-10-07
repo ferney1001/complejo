@@ -27,6 +27,38 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const reservaForm = document.getElementById('reserva-form');
+            const totalSpan = document.getElementById('total');
+
+            // Precios de los servicios
+            const preciosServicios = {
+                bar: 10,
+                spa: 12,
+                salon_reuniones: 15,
+                alquiler_bicicletas: 5
+            };
+
+            // Calcular precio total
+            function calcularTotal() {
+                let total = parseFloat(document.getElementById('precioBase').value) || 0;
+                const serviciosSeleccionados = [];
+
+                Object.keys(preciosServicios).forEach(servicio => {
+                    const checkbox = document.querySelector(`input[name="servicio"][value="${servicio}"]`);
+                    if (checkbox.checked) {
+                        serviciosSeleccionados.push(servicio);
+                        total += preciosServicios[servicio];
+                    }
+                });
+
+                totalSpan.textContent = total.toFixed(2); // Mostrar el total con dos decimales
+                return serviciosSeleccionados;
+            }
+
+            // Event listener para los checkboxes
+            const checkboxes = document.querySelectorAll('input[name="servicio"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', calcularTotal);
+            });
 
             reservaForm.addEventListener('submit', async (event) => {
                 event.preventDefault();
@@ -34,17 +66,22 @@
                 const formData = new FormData(reservaForm);
                 const data = Object.fromEntries(formData.entries());
 
-                // Asegúrate de que 'idhabitacion' esté en 'data'
-                console.log("Datos a enviar:", data); // Ver los datos en la consola
+                // Obtener servicios seleccionados y calcular total
+                const serviciosSeleccionados = calcularTotal();
+                data.servicios = serviciosSeleccionados.join(', '); // Solo 'servicios' se enviará
+                data.totalPrecio = totalSpan.textContent;
+
+                // Eliminar propiedad 'servicio' si existe
+                delete data.servicio;
 
                 try {
                     const newReservaRef = ref(database, 'reservas/' + Date.now());
                     await set(newReservaRef, data);
-                    console.log("Reserva confirmada con ID:", newReservaRef.key);
                     alert("Reserva confirmada!");
                     reservaForm.reset();
+                    totalSpan.textContent = "0.00"; // Resetear total
                 } catch (e) {
-                    console.error("Error al añadir reserva: ", e); // Ver el error en la consola
+                    console.error("Error al añadir reserva: ", e);
                     alert("Error al confirmar la reserva. Intenta de nuevo.");
                 }
             });
@@ -53,6 +90,8 @@
             const urlParams = new URLSearchParams(window.location.search);
             const idAlojamiento = urlParams.get('id');
             document.getElementById('idhabitacion').value = idAlojamiento; // Esto ahora está habilitado
+            document.getElementById('precioBase').value = "100"; // Ajustar según el alojamiento seleccionado
+            calcularTotal(); // Calcular el total inicial
         });
     </script>
 </head>
@@ -77,30 +116,42 @@
                 <label>Teléfono: <input type="tel" name="telefono" required></label>
                 <label>Correo electrónico: <input type="email" name="correo" required></label>
                 <label>ID Habitación: <input type="text" name="idhabitacion" id="idhabitacion" required></label>
+                <input type="hidden" id="precioBase" value="100"> <!-- Precio base oculto -->
                 <label>Fecha de llegada: <input type="date" name="fecha-llegada" required></label>
                 <label>Fecha de salida: <input type="date" name="fecha-salida" required></label>
                 
                 <h2>Selecciona los servicios adicionales:</h2>
                 <div class="servicios">
-                    <label>
-                        <input type="checkbox" name="servicio" value="bar"> 
-                        <img src="https://via.placeholder.com/50?text=Bar" alt="Bar"> Servicio de Bar
-                    </label>
-                    <label>
-                        <input type="checkbox" name="servicio" value="spa"> 
-                        <img src="https://via.placeholder.com/50?text=Spa" alt="Spa"> Servicio de Spa
-                    </label>
-                    <label>
-                        <input type="checkbox" name="servicio" value="salon_reuniones"> 
-                        <img src="https://via.placeholder.com/50?text=Salón" alt="Salón de Reuniones"> Salón de Reuniones
-                    </label>
-                    <label>
-                        <input type="checkbox" name="servicio" value="alquiler_bicicletas"> 
-                        <img src="https://via.placeholder.com/50?text=Bicicletas" alt="Alquiler de Bicicletas"> Alquiler de Bicicletas
-                    </label>
+                    <div>
+                        <img src="https://via.placeholder.com/100?text=Bar" alt="Bar">
+                        <label>
+                            <input type="checkbox" name="servicio" value="bar"> Servicio de Bar
+                        </label>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100?text=Spa" alt="Spa">
+                        <label>
+                            <input type="checkbox" name="servicio" value="spa"> Servicio de Spa
+                        </label>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100?text=Salón" alt="Salón de Reuniones">
+                        <label>
+                            <input type="checkbox" name="servicio" value="salon_reuniones"> Salón de Reuniones
+                        </label>
+                    </div>
+                    <div>
+                        <img src="https://via.placeholder.com/100?text=Bicicletas" alt="Alquiler de Bicicletas">
+                        <label>
+                            <input type="checkbox" name="servicio" value="alquiler_bicicletas"> Alquiler de Bicicletas
+                        </label>
+                    </div>
                 </div>
 
-                <button type="submit">Confirmar Reserva</button>
+                <div id="total-container" style="text-align: center;">
+                    <h3>Total: <span id="total">0.00</span> USD</h3>
+                    <button type="submit">Confirmar Reserva</button>
+                </div>
             </form>
         </div>
     </main>
